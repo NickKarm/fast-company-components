@@ -1,10 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
+import { paginate } from "../utils/paginate";
+import Pagination from "./pagination";
 import User from "./user";
+import PropTypes from "prop-types";
 
 const Users = (props) => {
+  const count = props.users.length;
+  const pageSize = 4;
+  const [currentPage, setCurrentPage] = useState(1);
+  const handlePageChange = (pageIndex) => {
+    setCurrentPage(pageIndex);
+  };
+
+  const userCrop = paginate(props.users, currentPage, pageSize);
+
+  console.log(userCrop);
   return (
     <>
-      {props.users.length > 0 && (
+      {count > 0 && (
         <table className="table">
           <thead>
             <tr>
@@ -18,29 +31,32 @@ const Users = (props) => {
             </tr>
           </thead>
           <tbody>
-            {props.users.map((user, idx) => (
-              <tr key={user._id}>
-                <User
-                  user={user}
-                  favoriteOn={props.onFavorite}
-                  status={props.statusArr[idx].favour}
-                ></User>
-
-                <td>
-                  <button
-                    onClick={() => props.onDelete(user._id)}
-                    className="btn btn-danger"
-                  >
-                    delete
-                  </button>
-                </td>
-              </tr>
+            {userCrop.map((user) => (
+              <User
+                key={user._id}
+                user={user}
+                onFavorite={props.onFavorite}
+                onDelete={props.onDelete}
+              ></User>
             ))}
           </tbody>
         </table>
       )}
+      <Pagination
+        itemsCount={count}
+        pageSize={pageSize}
+        currentPage={currentPage}
+        onPageChange={handlePageChange}
+      ></Pagination>
     </>
   );
+};
+
+Users.propTypes = {
+  users: PropTypes.array.isRequired,
+  statusArr: PropTypes.array,
+  onDelete: PropTypes.func.isRequired,
+  onFavorite: PropTypes.func.isRequired,
 };
 
 export default Users;

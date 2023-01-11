@@ -1,15 +1,18 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 function Qualitie(props) {
   return (
-    <td>
+    <>
       {props.qualities.map((item) => (
         <span className={"badge m-1 bg-" + item.color} key={item._id}>
           {item.name}
         </span>
       ))}
-    </td>
+    </>
   );
 }
+
+Qualitie.propTypes = { qualities: PropTypes.array.isRequired };
 
 export default Qualitie;

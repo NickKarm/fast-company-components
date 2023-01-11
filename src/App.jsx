@@ -4,41 +4,32 @@ import Users from "./app/components/users";
 import SearchStatus from "./app/components/searchStatus";
 
 function App() {
-    const [users, setUsers] = useState(API.users.fetchAll());
+  const [users, setUsers] = useState(API.users.fetchAll());
 
-    let initFavorites = [{ id: "", favour: false }];
-    for (let i = 0; i < users.length; i++) {
-        initFavorites[i] = { id: users[i]._id, favour: false };
-    }
+  const handleDelete = (userId) => {
+    setUsers(users.filter((user) => user._id !== userId));
+  };
 
-    let [favorites, setFavorites] = useState(initFavorites);
-
-    const handleDelete = (userId) => {
-        setUsers(users.filter((user) => user._id !== userId));
-        setFavorites(favorites.filter((favorite) => favorite.id !== userId));
-    };
-
-    const handleFavorite = (userId) => {
-        setFavorites(
-            favorites.map((favorite) => {
-                if (userId === favorite.id) {
-                    favorite.favour = !favorite.favour;
-                }
-                return favorite;
-            })
-        );
-    };
-
-    return (
-        <>
-            <SearchStatus length={users.length}></SearchStatus>
-            <Users
-                users={users}
-                onDelete={handleDelete}
-                statusArr={favorites}
-                onFavorite={handleFavorite}
-            ></Users>
-        </>
+  const handleFavorite = (userId) => {
+    setUsers(
+      users.map((user) => {
+        if (userId === user._id) {
+          return { ...user, bookmark: !user.bookmark };
+        }
+        return user;
+      })
     );
+  };
+
+  return (
+    <>
+      <SearchStatus length={users.length}></SearchStatus>
+      <Users
+        users={users}
+        onDelete={handleDelete}
+        onFavorite={handleFavorite}
+      ></Users>
+    </>
+  );
 }
 export default App;
